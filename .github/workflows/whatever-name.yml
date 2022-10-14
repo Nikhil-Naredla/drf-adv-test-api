@@ -1,0 +1,39 @@
+# for automation process like bit bucket and other tools
+# we are using git hub actions
+# so we need to create .github folder as it is and inside workflows(name is must) and inside 
+# workflows folder create any file(yaml) ---->it's a type of action we want to perform on certain trigger
+# --- makes it an yml file
+---
+# it checks the name of the file to do our action
+name: whatever-name
+
+# it's a trigger,like when we push some thing to github,it triggers a specified job or to do anything
+# as git hub action have many types of triggers ,can see in docs
+on: [push]
+
+# once the certain trigger is on,we can specify the job,it wants or we wants to run
+jobs: 
+  # in here we are running for test and lint,as test-lint is the id for this,and this id can be used in the git hub,to prioritize or use deleay the tasks to perform
+  test-lint:
+    # name is human readable name ,logs in github actions
+    # runs-on is the ,where our code wants to run,we choose ubuntu,but there are many custom runs-on
+    # steps is for to run steps accordingly,and it uses some actions,in this case it is alredy created action by github,we can make custom actions,and use it
+    # and with we are sending the params of username and password
+    name: Testing and Linting
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Login to DockerHub!!
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # once we are done with login to docker,we need to checkout to our code for testinag and linits,so we write this step
+      - name: code checkout!!
+        uses: actions/checkout@v2
+      # once the code is checkout we write test step
+      - name: Testing the code
+        run: docker-compose run --rm app sh -c "python manage.py test"
+      # once tests are ran,we make linting step
+      - name: Linting our code
+        run: docker-compose run --rm app sh -c "flake8"
+      # all these steps ran order wise,one after one,if any of these success,we see exit code of linux with 0,else failed

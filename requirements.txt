@@ -1,0 +1,6 @@
+# below >=,< represents,we want greater than or equal to and not greater than < version,
+# with this when we run our docker compose,it will build the image with in these versions
+# major.minor.patch ---> represents this 3.2.4,so when new build it will go to latest patch version,but not minor version,becuase
+# patch version refers to some security or other bug fixes,where as the minor version refer's to some time big changes
+Django>=3.2.4,<3.3
+djangorestframework>=3.12.4,<3.13
